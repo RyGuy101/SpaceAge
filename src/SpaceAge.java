@@ -1,6 +1,7 @@
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -15,27 +16,41 @@ import javax.swing.WindowConstants;
 public class SpaceAge extends JComponent implements ActionListener, KeyListener
 {
 	Image background;
+	Image livablePlanet;
+	Image planet0;
 	Image planet1;
 	Image planet2;
 	Image planet3;
 	Image planet4;
 	Image planet5;
-	Image planet6;
-	Image planet7;
 	Image spaceShip;
-	int spaceX = 1280/2;
-	int spaceY = 719/2;
+	int width = Toolkit.getDefaultToolkit().getScreenSize().width - 20;
+	int height = width/2;
+	int spaceX = width/2;
+	int spaceY = height/2;
+	boolean up = false;
+	boolean down = false;
+	boolean right = false;
+	boolean left = false;
+	int theXFactor = 0;
+	int speed = height/60;
+	int length = 5;
+	int[] randomX = {(int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2))};
+	int[] randomY = {(int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4))};
+	int[] randomP = {(int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5)};
 	public SpaceAge() throws IOException
 	{
-		background = ImageIO.read(getClass().getResource("stars.jpg"));
-		planet1 = ImageIO.read(getClass().getResource("planet1.jpg"));
-		planet2 = ImageIO.read(getClass().getResource("planet2.jpg"));
-		planet3 = ImageIO.read(getClass().getResource("planet3.jpg"));
-		planet4 = ImageIO.read(getClass().getResource("planet4.jpg"));
-		planet5 = ImageIO.read(getClass().getResource("planet5.jpg"));
-		planet6 = ImageIO.read(getClass().getResource("planet6.jpg"));
-		planet7 = ImageIO.read(getClass().getResource("planet7.jpg"));
-		spaceShip = ImageIO.read(getClass().getResource("spaceShip.jpg"));
+		background = ImageIO.read(getClass().getResource("stars.png")).getScaledInstance(-1, height/2, 0);
+		livablePlanet = ImageIO.read(getClass().getResource("planet1.jpg")).getScaledInstance(height/4, height/4, 0);
+		planet0 = ImageIO.read(getClass().getResource("planet2.jpg")).getScaledInstance(height/4, height/4, 0);
+		planet1 = ImageIO.read(getClass().getResource("planet3.jpg")).getScaledInstance(height/4, height/4, 0);
+		planet2 = ImageIO.read(getClass().getResource("planet4.jpg")).getScaledInstance(height/4, height/4, 0);
+		planet3 = ImageIO.read(getClass().getResource("planet5.jpg")).getScaledInstance(height/4, height/4, 0);
+		planet4 = ImageIO.read(getClass().getResource("planet6.jpg")).getScaledInstance(height/4, height/4, 0);
+		planet5 = ImageIO.read(getClass().getResource("planet7.jpg")).getScaledInstance(height/4, height/4, 0);
+		spaceShip = ImageIO.read(getClass().getResource("spaceShip.jpg")).getScaledInstance(height/4, -1, 0);
+		spaceX -= spaceShip.getWidth(null)/2;
+		spaceY -= spaceShip.getHeight(null)/2;
 	}
 	public static void main(String[] args) throws IOException
 	{
@@ -52,52 +67,127 @@ public class SpaceAge extends JComponent implements ActionListener, KeyListener
 	@Override
 	public Dimension getPreferredSize()
 	{
-		return new Dimension(1280, 719);
-	}
-	@Override
-	public void paint(Graphics g)
-	{
-		g.fillRect(100, 100, 100, 100);
-		g.drawImage(background, 0, 0, null);
-		g.drawImage(planet1, 100, 100, null);
-		g.drawImage(planet2, 300, 300, null);
-		g.drawImage(spaceShip, spaceX, spaceY, null);
-	}
-	@Override
-	public void actionPerformed(ActionEvent e)
-	{
-		repaint();
+		return new Dimension(width, height);
 	}
 	@Override
 	public void keyPressed(KeyEvent e)
 	{
 		if (e.getKeyCode() == KeyEvent.VK_UP)
 		{
-			spaceY -= 5;
+			up = true;
 		} 
-		else if (e.getKeyCode() == KeyEvent.VK_DOWN)
+		if (e.getKeyCode() == KeyEvent.VK_DOWN)
 		{
-			spaceY += 5;
+			down = true;
 		}
-		else if (e.getKeyCode() == KeyEvent.VK_RIGHT)
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
 		{
-			spaceX += 5;
+			right = true;
 		}
-		else if (e.getKeyCode() == KeyEvent.VK_LEFT)
+		if (e.getKeyCode() == KeyEvent.VK_LEFT)
 		{
-			spaceX -= 5;
+			left = true;
 		}
 	}
 	@Override
 	public void keyReleased(KeyEvent e)
 	{
-		// TODO Auto-generated method stub
-		
+		if (e.getKeyCode() == KeyEvent.VK_UP)
+		{
+			up = false;
+		} 
+		if (e.getKeyCode() == KeyEvent.VK_DOWN)
+		{
+			down = false;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
+		{
+			right = false;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_LEFT)
+		{
+			left = false;
+		}
 	}
 	@Override
 	public void keyTyped(KeyEvent e)
 	{
 		// TODO Auto-generated method stub
 		
+	}
+	@Override
+	public void paint(Graphics g)
+	{
+		if (up) 
+		{
+			spaceY -= speed;
+		}
+		if (down) 
+		{
+			spaceY += speed;
+		}
+		if (right) 
+		{
+			if (spaceX <= width * length - spaceShip.getWidth(null))
+			{
+				spaceX += speed;
+			}
+			if (spaceX >= width/2 - spaceShip.getHeight(null) * 2 && theXFactor <= width * (length-1))
+			{
+				theXFactor += speed;
+			}
+		}
+		if (left) 
+		{
+			if (spaceX >= 0) 
+			{
+				spaceX -= speed;
+			}
+			if (theXFactor != 0 && spaceX <= width/2 - spaceShip.getHeight(null) * 2 + theXFactor) 
+			{
+				theXFactor -= speed;
+			}
+		}
+		for (int i = 0; i < 2; i++) 
+		{
+			for (int j = 0; j < 4 * length + 1; j++) 
+			{
+				g.drawImage(background, (background.getWidth(null) * j) - theXFactor, (background.getHeight(null) * i), null);
+			}
+		}
+		for (int i = 0; i < 10; i++) 
+		{
+			if (randomP[i] == 0) 
+			{
+				g.drawImage(planet0, randomX[i] - theXFactor, randomY[i], null);
+			}
+			else if (randomP[i] == 1) 
+			{
+				g.drawImage(planet1, randomX[i] - theXFactor, randomY[i], null);
+			}
+			else if (randomP[i] == 2) 
+			{
+				g.drawImage(planet2, randomX[i] - theXFactor, randomY[i], null);
+			}
+			else if (randomP[i] == 3) 
+			{
+				g.drawImage(planet3, randomX[i] - theXFactor, randomY[i], null);
+			}
+			else if (randomP[i] == 4) 
+			{
+				g.drawImage(planet4, randomX[i] - theXFactor, randomY[i], null);
+			}
+			else if (randomP[i] == 5) 
+			{
+				g.drawImage(planet5, randomX[i] - theXFactor, randomY[i], null);
+			}
+		}
+		g.drawImage(livablePlanet, width * length - livablePlanet.getWidth(null) - theXFactor, height/2 - livablePlanet.getHeight(null)/2, null);
+		g.drawImage(spaceShip, spaceX - theXFactor, spaceY, null);
+	}
+	@Override
+	public void actionPerformed(ActionEvent e)
+	{
+		repaint();
 	}
 }
