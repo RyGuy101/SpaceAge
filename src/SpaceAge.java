@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -12,7 +13,11 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
+import javax.swing.text.GapContent;
 
+/*
+ * Fix Laser
+ */
 public class SpaceAge extends JComponent implements ActionListener, KeyListener
 {
 	Image background;
@@ -35,6 +40,11 @@ public class SpaceAge extends JComponent implements ActionListener, KeyListener
 	int theXFactor = 0;
 	int speed = height/60;
 	int length = 5;
+	int laserX;
+	int laserY;
+	boolean laserRelease = true;
+	boolean laserPress = false;
+	boolean laserShot = false;
 	int[] randomX = {(int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2))};
 	int[] randomY = {(int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4))};
 	int[] randomP = {(int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5)};
@@ -88,6 +98,11 @@ public class SpaceAge extends JComponent implements ActionListener, KeyListener
 		{
 			left = true;
 		}
+		if (e.getKeyCode() == KeyEvent.VK_SPACE && laserRelease == true)
+		{
+			laserPress = true;
+			laserRelease = false;
+		}
 	}
 	@Override
 	public void keyReleased(KeyEvent e)
@@ -108,6 +123,10 @@ public class SpaceAge extends JComponent implements ActionListener, KeyListener
 		{
 			left = false;
 		}
+		if (e.getKeyCode() == KeyEvent.VK_SPACE) 
+		{
+			laserRelease = true;
+		}
 	}
 	@Override
 	public void keyTyped(KeyEvent e)
@@ -120,11 +139,17 @@ public class SpaceAge extends JComponent implements ActionListener, KeyListener
 	{
 		if (up) 
 		{
-			spaceY -= speed;
+			if (spaceY > 0) 
+			{
+				spaceY -= speed;
+			}
 		}
 		if (down) 
 		{
-			spaceY += speed;
+			if (spaceY < height - spaceShip.getHeight(null)) 
+			{
+				spaceY += speed;
+			}
 		}
 		if (right) 
 		{
@@ -181,6 +206,21 @@ public class SpaceAge extends JComponent implements ActionListener, KeyListener
 			{
 				g.drawImage(planet5, randomX[i] - theXFactor, randomY[i], null);
 			}
+		}
+		if (laserShot = true) 
+		{
+			laserX += speed * 2;
+			g.setColor(Color.RED);
+			g.drawLine(laserX - theXFactor, laserY, laserX + 5 - theXFactor, laserY);
+		}
+		if (laserPress = true) 
+		{
+			laserPress = false;
+			laserX = spaceX + spaceShip.getWidth(null);
+			laserY = spaceY + spaceShip.getHeight(null)/2;
+			g.setColor(Color.RED);
+			g.drawLine(laserX - theXFactor, laserY, laserX + 5 - theXFactor, laserY);
+			laserShot = true;
 		}
 		g.drawImage(livablePlanet, width * length - livablePlanet.getWidth(null) - theXFactor, height/2 - livablePlanet.getHeight(null)/2, null);
 		g.drawImage(spaceShip, spaceX - theXFactor, spaceY, null);
