@@ -8,16 +8,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
+import java.util.ArrayList;
+
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
-import javax.swing.text.GapContent;
 
-/*
- * Fix Laser
- */
 public class SpaceAge extends JComponent implements ActionListener, KeyListener
 {
 	Image background;
@@ -40,14 +38,15 @@ public class SpaceAge extends JComponent implements ActionListener, KeyListener
 	int theXFactor = 0;
 	int speed = height/60;
 	int length = 5;
-	int laserX;
-	int laserY;
 	boolean laserRelease = true;
 	boolean laserPress = false;
-	boolean laserShot = false;
+	ArrayList<Integer> laserX = new ArrayList<Integer>();
+	ArrayList<Integer> laserY = new ArrayList<Integer>();
+	ArrayList<Integer> laserD = new ArrayList<Integer>();
 	int[] randomX = {(int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2))};
 	int[] randomY = {(int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4))};
 	int[] randomP = {(int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5)};
+	
 	public SpaceAge() throws IOException
 	{
 		background = ImageIO.read(getClass().getResource("stars.png")).getScaledInstance(-1, height/2, 0);
@@ -137,6 +136,7 @@ public class SpaceAge extends JComponent implements ActionListener, KeyListener
 	@Override
 	public void paint(Graphics g)
 	{
+		//moving controls
 		if (up) 
 		{
 			if (spaceY > 0) 
@@ -173,6 +173,7 @@ public class SpaceAge extends JComponent implements ActionListener, KeyListener
 				theXFactor -= speed;
 			}
 		}
+		//background
 		for (int i = 0; i < 2; i++) 
 		{
 			for (int j = 0; j < 4 * length + 1; j++) 
@@ -180,6 +181,7 @@ public class SpaceAge extends JComponent implements ActionListener, KeyListener
 				g.drawImage(background, (background.getWidth(null) * j) - theXFactor, (background.getHeight(null) * i), null);
 			}
 		}
+		//planets
 		for (int i = 0; i < 10; i++) 
 		{
 			if (randomP[i] == 0) 
@@ -207,22 +209,31 @@ public class SpaceAge extends JComponent implements ActionListener, KeyListener
 				g.drawImage(planet5, randomX[i] - theXFactor, randomY[i], null);
 			}
 		}
-		if (laserShot = true) 
-		{
-			laserX += speed * 2;
-			g.setColor(Color.RED);
-			g.drawLine(laserX - theXFactor, laserY, laserX + 5 - theXFactor, laserY);
-		}
-		if (laserPress = true) 
+		g.drawImage(livablePlanet, width * length - livablePlanet.getWidth(null) - theXFactor, height/2 - livablePlanet.getHeight(null)/2, null);
+		//laser
+		if (laserPress == true) 
 		{
 			laserPress = false;
-			laserX = spaceX + spaceShip.getWidth(null);
-			laserY = spaceY + spaceShip.getHeight(null)/2;
-			g.setColor(Color.RED);
-			g.drawLine(laserX - theXFactor, laserY, laserX + 5 - theXFactor, laserY);
-			laserShot = true;
+			laserX.add(new Integer(spaceX + spaceShip.getWidth(null)));
+			laserY.add(spaceY + spaceShip.getHeight(null)/2);
+			laserD.add(new Integer(0));
 		}
-		g.drawImage(livablePlanet, width * length - livablePlanet.getWidth(null) - theXFactor, height/2 - livablePlanet.getHeight(null)/2, null);
+		for (int i = laserX.size() - 1; i >= 0; i--) 
+		{
+			if (laserX.get(i) - theXFactor >= width && laserD.get(i) >= width/2 - spaceShip.getWidth(null)/2) 
+			{
+				laserX.remove(i);
+				laserY.remove(i);
+			} 
+			else
+			{
+				g.setColor(Color.RED);
+				g.fillRect(laserX.get(i) - theXFactor, laserY.get(i), height/80, height/200);
+				laserX.set(i, laserX.get(i) + speed * 4);
+				laserD.set(i, laserD.get(i) + speed * 4);
+			}
+		}
+		//space ship
 		g.drawImage(spaceShip, spaceX - theXFactor, spaceY, null);
 	}
 	@Override
