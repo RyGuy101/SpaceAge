@@ -9,13 +9,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
 
+/*
+ * 5/25/13
+ */
 public class SpaceAge extends JComponent implements ActionListener, KeyListener
 {
 	Image background;
@@ -37,7 +39,7 @@ public class SpaceAge extends JComponent implements ActionListener, KeyListener
 	boolean left = false;
 	int theXFactor = 0;
 	int speed = height/60;
-	int length = 5;
+	int length = 10;
 	boolean laserRelease = true;
 	boolean laserPress = false;
 	ArrayList<Integer> laserX = new ArrayList<Integer>();
@@ -153,22 +155,22 @@ public class SpaceAge extends JComponent implements ActionListener, KeyListener
 		}
 		if (right) 
 		{
-			if (spaceX <= width * length - spaceShip.getWidth(null))
+			if (spaceX < width * length - spaceShip.getWidth(null))
 			{
 				spaceX += speed;
 			}
-			if (spaceX >= width/2 - spaceShip.getHeight(null) * 2 && theXFactor <= width * (length-1))
+			if (spaceX >= width/2 - spaceShip.getWidth(null)/2 && theXFactor <  width * (length-1))
 			{
 				theXFactor += speed;
 			}
 		}
 		if (left) 
 		{
-			if (spaceX >= 0) 
+			if (spaceX > 0) 
 			{
 				spaceX -= speed;
 			}
-			if (theXFactor != 0 && spaceX <= width/2 - spaceShip.getHeight(null) * 2 + theXFactor) 
+			if (theXFactor > 0 && spaceX <= width/2 - spaceShip.getWidth(null)/2 + theXFactor) 
 			{
 				theXFactor -= speed;
 			}
