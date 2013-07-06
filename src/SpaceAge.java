@@ -33,33 +33,36 @@ public class SpaceAge extends JComponent implements ActionListener, KeyListener
 	int height = width/2;
 	int spaceX = width/2;
 	int spaceY = height/2;
+	int numOfPlanets = 20;
 	boolean up = false;
 	boolean down = false;
 	boolean right = false;
 	boolean left = false;
+	boolean intersectPlan = true;
 	int theXFactor = 0;
-	int speed = height/60;
-	int length = 10;
+	int speed = height/70;
+	int length = 5;
 	boolean laserRelease = true;
 	boolean laserPress = false;
+	boolean start = true;
 	ArrayList<Integer> laserX = new ArrayList<Integer>();
 	ArrayList<Integer> laserY = new ArrayList<Integer>();
 	ArrayList<Integer> laserD = new ArrayList<Integer>();
-	int[] randomX = {(int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2)), (int) (Math.random() * (width * length - height/2))};
-	int[] randomY = {(int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4)), (int) (Math.random() * (height - height/4))};
-	int[] randomP = {(int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5)};
+	ArrayList<Integer> randomX = new ArrayList<Integer>();
+	ArrayList<Integer> randomY = new ArrayList<Integer>();
+	ArrayList<Integer> randomP = new ArrayList<Integer>();
 	
 	public SpaceAge() throws IOException
 	{
-		background = ImageIO.read(getClass().getResource("stars.png")).getScaledInstance(-1, height/2, 0);
-		livablePlanet = ImageIO.read(getClass().getResource("planet1.jpg")).getScaledInstance(height/4, height/4, 0);
-		planet0 = ImageIO.read(getClass().getResource("planet2.jpg")).getScaledInstance(height/4, height/4, 0);
-		planet1 = ImageIO.read(getClass().getResource("planet3.jpg")).getScaledInstance(height/4, height/4, 0);
-		planet2 = ImageIO.read(getClass().getResource("planet4.jpg")).getScaledInstance(height/4, height/4, 0);
-		planet3 = ImageIO.read(getClass().getResource("planet5.jpg")).getScaledInstance(height/4, height/4, 0);
-		planet4 = ImageIO.read(getClass().getResource("planet6.jpg")).getScaledInstance(height/4, height/4, 0);
-		planet5 = ImageIO.read(getClass().getResource("planet7.jpg")).getScaledInstance(height/4, height/4, 0);
-		spaceShip = ImageIO.read(getClass().getResource("spaceShip.jpg")).getScaledInstance(height/4, -1, 0);
+		background = ImageIO.read(getClass().getResource("stars.png")).getScaledInstance(-1, (int) (height/2.0), 0);
+		livablePlanet = ImageIO.read(getClass().getResource("planet1.jpg")).getScaledInstance((int) (height/4.0), (int) (height/4.0), 0);
+		planet0 = ImageIO.read(getClass().getResource("planet2.jpg")).getScaledInstance((int) (height/4.0), (int) (height/4.0), 0);
+		planet1 = ImageIO.read(getClass().getResource("planet3.jpg")).getScaledInstance((int) (height/4.0), (int) (height/4.0), 0);
+		planet2 = ImageIO.read(getClass().getResource("planet4.jpg")).getScaledInstance((int) (height/4.0), (int) (height/4.0), 0);
+		planet3 = ImageIO.read(getClass().getResource("planet5.jpg")).getScaledInstance((int) (height/4.0), (int) (height/4.0), 0);
+		planet4 = ImageIO.read(getClass().getResource("planet6.jpg")).getScaledInstance((int) (height/4.0), (int) (height/4.0), 0);
+		planet5 = ImageIO.read(getClass().getResource("planet7.jpg")).getScaledInstance((int) (height/4.0), (int) (height/4.0), 0);
+		spaceShip = ImageIO.read(getClass().getResource("spaceShip.jpg")).getScaledInstance((int) (height/4.0), -1, 0);
 		spaceX -= spaceShip.getWidth(null)/2;
 		spaceY -= spaceShip.getHeight(null)/2;
 	}
@@ -72,7 +75,7 @@ public class SpaceAge extends JComponent implements ActionListener, KeyListener
 		window.pack();
 		window.setVisible(true);
 		window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		Timer time = new Timer(50, game);
+		Timer time = new Timer(42, game);
 		time.start();
 	}
 	@Override
@@ -83,19 +86,19 @@ public class SpaceAge extends JComponent implements ActionListener, KeyListener
 	@Override
 	public void keyPressed(KeyEvent e)
 	{
-		if (e.getKeyCode() == KeyEvent.VK_UP)
+		if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W)
 		{
 			up = true;
 		} 
-		if (e.getKeyCode() == KeyEvent.VK_DOWN)
+		if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S)
 		{
 			down = true;
 		}
-		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D)
 		{
 			right = true;
 		}
-		if (e.getKeyCode() == KeyEvent.VK_LEFT)
+		if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A)
 		{
 			left = true;
 		}
@@ -108,19 +111,19 @@ public class SpaceAge extends JComponent implements ActionListener, KeyListener
 	@Override
 	public void keyReleased(KeyEvent e)
 	{
-		if (e.getKeyCode() == KeyEvent.VK_UP)
+		if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W)
 		{
 			up = false;
 		} 
-		if (e.getKeyCode() == KeyEvent.VK_DOWN)
+		if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S)
 		{
 			down = false;
 		}
-		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D)
 		{
 			right = false;
 		}
-		if (e.getKeyCode() == KeyEvent.VK_LEFT)
+		if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A)
 		{
 			left = false;
 		}
@@ -180,35 +183,65 @@ public class SpaceAge extends JComponent implements ActionListener, KeyListener
 		{
 			for (int j = 0; j < 4 * length + 1; j++) 
 			{
-				g.drawImage(background, (background.getWidth(null) * j) - theXFactor, (background.getHeight(null) * i), null);
+				g.drawImage(background, (background.getWidth(null) * j) - theXFactor/2, (background.getHeight(null) * i), null);
 			}
 		}
-		//planets
-		for (int i = 0; i < 10; i++) 
+		//stuff to do at very start
+		if (start) 
 		{
-			if (randomP[i] == 0) 
+			start = false;
+			//set planet positions
+			for (int i = 0; i < numOfPlanets; i++) 
 			{
-				g.drawImage(planet0, randomX[i] - theXFactor, randomY[i], null);
+				randomX.add((int) (Math.random() * (width * length - height/2 - width/2 - spaceShip.getWidth(null)/2)));
+				randomY.add((int) (Math.random() * (height - height/4)));
+				randomP.add((int) (Math.random() * 5));
 			}
-			else if (randomP[i] == 1) 
+			while (intersectPlan)
 			{
-				g.drawImage(planet1, randomX[i] - theXFactor, randomY[i], null);
+				intersectPlan = false;
+				for (int i = 0; i < numOfPlanets - 1; i++) 
+				{
+					for (int j = i + 1; j < numOfPlanets; j++) 
+					{
+						if (randomX.get(j) - randomX.get(i) < height/4 + spaceShip.getWidth(null) && randomY.get(j) - randomY.get(i) < height/4 + spaceShip.getHeight(null) && randomX.get(j) - randomX.get(i) > (height/4 + spaceShip.getWidth(null)) * -1 && randomY.get(j) - randomY.get(i) > (height/4 + spaceShip.getHeight(null)) * -1) 
+						{
+							randomX.set(j, (int) (Math.random() * (width * length - height/2 - width/2 - spaceShip.getWidth(null)/2)));
+							randomY.set(j, (int) (Math.random() * (height - height/4)));
+							intersectPlan = true;
+						}
+					}
+				}
 			}
-			else if (randomP[i] == 2) 
+		}
+		//paint the planets
+		for (int i = 0; i < numOfPlanets; i++) 
+		{
+			int X = randomX.get(i);
+			int Y = randomY.get(i);
+	     	if (randomP.get(i) == 0) 
 			{
-				g.drawImage(planet2, randomX[i] - theXFactor, randomY[i], null);
+				g.drawImage(planet0, X + width/2 + spaceShip.getWidth(null)/2 - theXFactor, Y, null);
 			}
-			else if (randomP[i] == 3) 
+			else if (randomP.get(i) == 1) 
 			{
-				g.drawImage(planet3, randomX[i] - theXFactor, randomY[i], null);
+				g.drawImage(planet1, X + width/2 + spaceShip.getWidth(null)/2 - theXFactor, Y, null);
 			}
-			else if (randomP[i] == 4) 
+			else if (randomP.get(i) == 2) 
 			{
-				g.drawImage(planet4, randomX[i] - theXFactor, randomY[i], null);
+				g.drawImage(planet2, X + width/2 + spaceShip.getWidth(null)/2 - theXFactor, Y, null);
 			}
-			else if (randomP[i] == 5) 
+			else if (randomP.get(i) == 3) 
 			{
-				g.drawImage(planet5, randomX[i] - theXFactor, randomY[i], null);
+				g.drawImage(planet3, X + width/2 + spaceShip.getWidth(null)/2 - theXFactor, Y, null);
+			}
+			else if (randomP.get(i) == 4) 
+			{
+				g.drawImage(planet4, X + width/2 + spaceShip.getWidth(null)/2 - theXFactor, Y, null);
+			}
+			else if (randomP.get(i) == 5) 
+			{
+				g.drawImage(planet5, X + width/2 + spaceShip.getWidth(null)/2 - theXFactor, Y, null);
 			}
 		}
 		g.drawImage(livablePlanet, width * length - livablePlanet.getWidth(null) - theXFactor, height/2 - livablePlanet.getHeight(null)/2, null);
