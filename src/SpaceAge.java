@@ -17,8 +17,8 @@ import javax.swing.Timer;
 import javax.swing.WindowConstants;
 
 /*
- * 7/22/13
- * worked on intersection with the planets and BOOM!!!
+ * 7/25/13
+ * Fixed lasers. Still need to perfect intersection with the planets and BOOM!
  */
 public class SpaceAge extends JComponent implements ActionListener, KeyListener
 {
@@ -269,17 +269,35 @@ public class SpaceAge extends JComponent implements ActionListener, KeyListener
 		}
 		for (int i = laserX.size() - 1; i >= 0; i--) 
 		{
-			if (laserX.get(i) - theXFactor >= width && laserD.get(i) >= width/2 - spaceShip.getWidth(null)/2) 
+			for (int j = 0; j < planets.size(); j++) //Work on this part!!!
 			{
-				laserX.remove(i);
-				laserY.remove(i);
-			} 
-			else
+				if (i >= laserX.size()) 
+				{
+					i = laserX.size() - 1;
+				}
+				if (laserX.size() > 0)
+				{
+					if (planets.get(j).intersects(laserX.get(i), laserY.get(i), (int) (height/80.0), (int) (height/200.0))) 
+					{
+						laserX.remove(i);
+						laserY.remove(i);
+					}
+				}
+			}
+			if (laserX.size() > 0)
 			{
-				g.setColor(Color.RED);
-				g.fillRect(laserX.get(i) - theXFactor, laserY.get(i), height/80, height/200);
-				laserX.set(i, laserX.get(i) + speed * 4);
-				laserD.set(i, laserD.get(i) + speed * 4);
+				if (laserX.get(i) - theXFactor >= width && laserD.get(i) >= width/2 - spaceShip.getWidth(null)/2) 
+				{
+					laserX.remove(i);
+					laserY.remove(i);
+				}
+				else
+				{
+					g.setColor(Color.RED);
+					g.fillRect(laserX.get(i) - theXFactor, laserY.get(i), (int) (height/80.0), (int) (height/200.0));
+					laserX.set(i, laserX.get(i) + speed * 4);
+					laserD.set(i, laserD.get(i) + speed * 4);
+				}
 			}
 		}
 		//space ship
@@ -288,11 +306,12 @@ public class SpaceAge extends JComponent implements ActionListener, KeyListener
 		{
 			//In testing
 			//if (spaceX + spaceShip.getWidth(null) > randomX.get(i) + width/2 + spaceShip.getWidth(null)/2 && spaceX < randomX.get(i) + width/2 + spaceShip.getWidth(null)/2 + planet0.getWidth(null) && spaceY + spaceShip.getHeight(null) > randomY.get(i) && spaceY < randomY.get(i) + planet0.getHeight(null)) {
-			if (planets.get(i).intersects(spaceX, spaceY, spaceShip.getWidth(null), spaceShip.getHeight(null))) {
+			if (planets.get(i).intersects(spaceX + spaceShip.getWidth(null)/8.0, spaceY + spaceShip.getHeight(null)/4.0, spaceShip.getWidth(null) - spaceShip.getWidth(null)/4.0, spaceShip.getHeight(null) - spaceShip.getHeight(null)/2.0)) {
 				g.drawImage(boom, boomX - theXFactor, boomY, null);
 			}
 		}
 		//g.drawImage(boom, boomX - theXFactor, boomY, null);
+		g.fillRect((int) (spaceX + spaceShip.getWidth(null)/8.0), (int) (spaceY + spaceShip.getHeight(null)/2.0), (int) (spaceShip.getWidth(null) - spaceShip.getWidth(null)/4.0), (int) (spaceShip.getHeight(null) - spaceShip.getHeight(null)/1.5));
 	}
 	@Override
 	public void actionPerformed(ActionEvent e)
