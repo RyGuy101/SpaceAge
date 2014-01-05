@@ -17,14 +17,14 @@ import javax.swing.Timer;
 import javax.swing.WindowConstants;
 
 /*
- * 12/14/13
- * Updated BOOM!
+ * 1/4/14
+ * Started working on intro page.
  */
 public class SpaceAge extends JComponent implements ActionListener, KeyListener
 {
 	static SpaceAge game;
-	static JFrame window = new JFrame("Space Age Colonization");
-	static Timer time;
+	JFrame window = new JFrame("Space Age Colonization");
+	Timer time;
 	Image background;
 	Image livablePlanet;
 	Image planet0;
@@ -77,18 +77,18 @@ public class SpaceAge extends JComponent implements ActionListener, KeyListener
 		boom = ImageIO.read(getClass().getResource("boom.png")).getScaledInstance((int) (spaceShip.getWidth(null) * 1.2), -1, 0);
 		spaceX -= spaceShip.getWidth(null) / 2;
 		spaceY -= spaceShip.getHeight(null) / 2;
+		window.add(this);
+		window.addKeyListener(this);
+		window.pack();
+		window.setVisible(true);
+		window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		time = new Timer(42, this);
+		time.start();
 	}
 
 	public static void main(String[] args) throws IOException
 	{
 		game = new SpaceAge();
-		window.add(game);
-		window.addKeyListener(game);
-		window.pack();
-		window.setVisible(true);
-		window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		time = new Timer(42, game);
-		time.start();
 	}
 
 	@Override
@@ -318,19 +318,19 @@ public class SpaceAge extends JComponent implements ActionListener, KeyListener
 		}
 		if (die)
 		{
-			time.setDelay(10);
-			drawBoom++;
-			if (drawBoom == 4)
-			{
-				drawBoom = 0;
-			} else
-			{
+//			time.setDelay(10);
+//			drawBoom++;
+//			if (drawBoom == 4)
+//			{
+//				drawBoom = 0;
+//			} else
+//			{
 				g.drawImage(boom, boomX - theXFactor, boomY, null);
-			}
-		} else
-		{
-			time.setDelay(42);
-		}
+//			}
+		} //else
+//		{
+//			time.setDelay(42);
+//		}
 		// g.drawImage(boom, boomX - theXFactor, boomY, null);
 		g.fillRect((int) (spaceX + spaceShip.getWidth(null) / 8.0), (int) (spaceY + spaceShip.getHeight(null) / 2.0), (int) (spaceShip.getWidth(null) - spaceShip.getWidth(null) / 4.0), (int) (spaceShip.getHeight(null) - spaceShip.getHeight(null) / 1.5));
 	}
