@@ -332,7 +332,7 @@ public class SpaceAge extends JComponent implements ActionListener, KeyListener
 //			time.setDelay(42);
 //		}
 		// g.drawImage(boom, boomX - theXFactor, boomY, null);
-		g.fillRect((int) (spaceX + spaceShip.getWidth(null) / 8.0), (int) (spaceY + spaceShip.getHeight(null) / 2.0), (int) (spaceShip.getWidth(null) - spaceShip.getWidth(null) / 4.0), (int) (spaceShip.getHeight(null) - spaceShip.getHeight(null) / 1.5));
+		//g.fillRect((int) (spaceX + spaceShip.getWidth(null) / 8.0), (int) (spaceY + spaceShip.getHeight(null) / 2.0), (int) (spaceShip.getWidth(null) - spaceShip.getWidth(null) / 4.0), (int) (spaceShip.getHeight(null) - spaceShip.getHeight(null) / 1.5));
 	}
 
 	@Override
